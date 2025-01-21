@@ -249,8 +249,12 @@ Database::Database(const std::string& path) : Database() { Open(path); }
 
 Database::~Database() { Close(); }
 
-void Database::Open(const std::string& path) {
+void Database::Open(const std::string& path, bool readonly) {
   Close();
+
+  int flags = readonly
+              ? SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX
+              : SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX;
 
   // SQLITE_OPEN_NOMUTEX specifies that the connection should not have a
   // mutex (so that we don't serialize the connection's operations).
@@ -259,7 +263,7 @@ void Database::Open(const std::string& path) {
   SQLITE3_CALL(sqlite3_open_v2(
       path.c_str(),
       &database_,
-      SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX,
+      flags,
       nullptr));
 
   // Don't wait for the operating system to write the changes to disk

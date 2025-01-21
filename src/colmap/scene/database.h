@@ -77,7 +77,7 @@ class Database {
 
   // Open and close database. The same database should not be opened
   // concurrently in multiple threads or processes.
-  void Open(const std::string& path);
+  void Open(const std::string& path, bool readonly = false);
   void Close();
 
   // Check if entry already exists in database. For image pairs, the order of
