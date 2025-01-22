@@ -281,8 +281,11 @@ void Database::Open(const std::string& path, bool readonly) {
   // Enable auto vacuum to reduce DB file size
   SQLITE3_EXEC(database_, "PRAGMA auto_vacuum=1", nullptr);
 
-  CreateTables();
-  UpdateSchema();
+  if (!readonly) {
+    CreateTables();
+    UpdateSchema();
+  }
+
   PrepareSQLStatements();
 }
 
